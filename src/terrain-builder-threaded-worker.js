@@ -261,13 +261,21 @@ class _TerrainBuilderThreadedWorker {
     const uiWeights1 = weights1;
     const uiWeights2 = weights2;
 
-    const positionsArray = new Float32Array(new SharedArrayBuffer(4 * uiPositions.length));
-    const coloursArray = new Float32Array(new SharedArrayBuffer(4 * uiColours.length));
-    const normalsArray = new Float32Array(new SharedArrayBuffer(4 * uiNormals.length));
-    const tangentsArray = new Float32Array(new SharedArrayBuffer(4 * uiTangents.length));
-    const uvsArray = new Float32Array(new SharedArrayBuffer(4 * uiUVs.length));
-    const weights1Array = new Float32Array(new SharedArrayBuffer(4 * uiWeights2.length));
-    const weights2Array = new Float32Array(new SharedArrayBuffer(4 * uiWeights2.length));
+    const bytesInFloat32 = 4;
+    const positionsArray = new Float32Array(
+        new SharedArrayBuffer(bytesInFloat32 * uiPositions.length));
+    const coloursArray = new Float32Array(
+        new SharedArrayBuffer(bytesInFloat32 * uiColours.length));
+    const normalsArray = new Float32Array(
+        new SharedArrayBuffer(bytesInFloat32 * uiNormals.length));
+    const tangentsArray = new Float32Array(
+        new SharedArrayBuffer(bytesInFloat32 * uiTangents.length));
+    const uvsArray = new Float32Array(
+        new SharedArrayBuffer(bytesInFloat32 * uiUVs.length));
+    const weights1Array = new Float32Array(
+        new SharedArrayBuffer(bytesInFloat32 * uiWeights2.length));
+    const weights2Array = new Float32Array(
+        new SharedArrayBuffer(bytesInFloat32 * uiWeights2.length));
 
     positionsArray.set(uiPositions, 0);
     coloursArray.set(uiColours, 0);
@@ -293,7 +301,8 @@ const _CHUNK = new _TerrainBuilderThreadedWorker();
 self.onmessage = (msg) => {
   if (msg.data.subject == 'build_chunk') {
     _CHUNK.Init(msg.data.params);
-  }
 
-  self.postMessage({subject: 'build_chunk_result', data: _CHUNK.Rebuild()});
+    const rebuiltData = _CHUNK.Rebuild();
+    self.postMessage({subject: 'build_chunk_result', data: rebuiltData});
+  }
 }

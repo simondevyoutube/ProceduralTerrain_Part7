@@ -124,8 +124,6 @@ export const terrain_builder_threaded = (function() {
         params: threadedParams,
       };
 
-      const sab = new SharedArrayBuffer(1024);
-
       this._workerPool.Enqueue(msg, (m) => {
         this._OnResult(c, m);
       });
