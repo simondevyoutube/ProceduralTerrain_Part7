@@ -8,7 +8,7 @@ export const terrain_builder_threaded = (function() {
 
   let _IDs = 0;
 
-  class PWorker {
+  class WorkerThread {
     constructor(s) {
       this._worker = new Worker(s, {type: 'module'});
       this._worker.onmessage = (e) => {
@@ -28,15 +28,15 @@ export const terrain_builder_threaded = (function() {
       return this._id;
     }
 
-    sendAsync(s, resolve) {
+    postMessage(s, resolve) {
       this._resolve = resolve;
       this._worker.postMessage(s);
     }
   }
 
-  class PWorkerPool {
+  class WorkerThreadPool {
     constructor(sz, entry) {
-      this._workers = [...Array(sz)].map(_ => new PWorker(entry));
+      this._workers = [...Array(sz)].map(_ => new WorkerThread(entry));
       this._free = [...this._workers];
       this._busy = {};
       this._queue = [];
@@ -62,7 +62,7 @@ export const terrain_builder_threaded = (function() {
 
         const [workItem, workResolve] = this._queue.shift();
 
-        w.sendAsync(workItem, (v) => {
+        w.postMessage(workItem, (v) => {
           delete this._busy[w.id];
           this._free.push(w);
           workResolve(v);
@@ -77,14 +77,15 @@ export const terrain_builder_threaded = (function() {
       this._pool = {};
       this._old = [];
 
-      this._workerPool = new PWorkerPool(_NUM_WORKERS, 'src/terrain-builder-threaded-worker.js');
+      this._workerPool = new WorkerThreadPool(
+          _NUM_WORKERS, 'src/terrain-builder-threaded-worker.js');
   
       this._params = params;
     }
 
     _OnResult(chunk, msg) {
       if (msg.subject == 'build_chunk_result') {
-        chunk.RebuildMeshFromData(msg.data)
+        chunk.RebuildMeshFromData(msg.data);
         chunk.Show();
       }
     }

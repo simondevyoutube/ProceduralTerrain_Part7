@@ -4,9 +4,7 @@ import {controls} from './controls.js';
 import {game} from './game.js';
 import {terrain} from './terrain.js';
 
-
 let _APP = null;
-
 
 
 class ProceduralTerrain_Demo extends game.Game {
@@ -33,22 +31,6 @@ class ProceduralTerrain_Demo extends game.Game {
       game: this
     });
 
-    // this._entities['_controls'] = new controls.OrbitControls({
-    //   camera: this._graphics.Camera,
-    //   scene: this._graphics.Scene,
-    //   domElement: this._graphics._threejs.domElement,
-    //   gui: this._gui,
-    //   guiParams: this._guiParams,
-    // });
-
-    // this._entities['_controls'] = new controls.ShipControls({
-    //   camera: this._graphics.Camera,
-    //   scene: this._graphics.Scene,
-    //   domElement: this._graphics._threejs.domElement,
-    //   gui: this._gui,
-    //   guiParams: this._guiParams,
-    // });
-
     this._entities['_controls'] = new controls.FPSControls({
         camera: this._graphics.Camera,
         scene: this._graphics.Scene,
@@ -56,15 +38,6 @@ class ProceduralTerrain_Demo extends game.Game {
         gui: this._gui,
         guiParams: this._guiParams,
     });
-
-    // this._focusMesh = new THREE.Mesh(
-    //   new THREE.SphereGeometry(25, 32, 32),
-    //   new THREE.MeshBasicMaterial({
-    //       color: 0xFFFFFF
-    //   }));
-    // this._focusMesh.castShadow = true;
-    // this._focusMesh.receiveShadow = true;
-    //this._graphics.Scene.add(this._focusMesh);
 
     this._totalTime = 0;
 

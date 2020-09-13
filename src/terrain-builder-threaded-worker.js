@@ -22,7 +22,10 @@ class _TerrainBuilderThreadedWorker {
     this._params.biomeGenerator = new noise.Noise(params.biomesParams);
     this._params.colourNoise = new noise.Noise(params.colourNoiseParams);
     this._params.colourGenerator = new texture_splatter.TextureSplatter(
-        {biomeGenerator: this._params.biomeGenerator, colourNoise: this._params.colourNoise});
+        {
+          biomeGenerator: this._params.biomeGenerator,
+          colourNoise: this._params.colourNoise
+        });
   }
 
   _GenerateHeight(v) {

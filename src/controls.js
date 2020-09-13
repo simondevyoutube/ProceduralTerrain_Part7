@@ -45,13 +45,19 @@ export const controls = (function() {
       this._standing = true;
       this._velocity = new THREE.Vector3(0, 0, 0);
       this._decceleration = new THREE.Vector3(-10, -10, -10);
-      this._acceleration = new THREE.Vector3(50000, 50000, 50000);
+      this._acceleration = new THREE.Vector3(5000, 5000, 5000);
 
       this._SetupPointerLock();
 
       this._controls = new PointerLockControls(
           params.camera, document.body);
       params.scene.add(this._controls.getObject());
+
+      const controlObject = this._controls.getObject();
+      this._position = new THREE.Vector3();
+      this._rotation = new THREE.Quaternion();
+      this._position.copy(controlObject.position);
+      this._rotation.copy(controlObject.quaternion);
 
       document.addEventListener('keydown', (e) => this._onKeyDown(e), false);
       document.addEventListener('keyup', (e) => this._onKeyUp(e), false);
@@ -61,7 +67,7 @@ export const controls = (function() {
 
     _InitGUI() {
       this._params.guiParams.camera = {
-        acceleration_x: 50000,
+        acceleration_x: 5000,
       };
 
       const rollup = this._params.gui.addFolder('Camera.FPS');
@@ -254,7 +260,11 @@ export const controls = (function() {
       controlObject.position.add(sideways);
       controlObject.position.add(updown);
 
-      oldPosition.copy(controlObject.position);
+      // this._position.lerp(controlObject.position, 0.15);
+      this._rotation.slerp(controlObject.quaternion, 0.15);
+
+      // controlObject.position.copy(this._position);
+      controlObject.quaternion.copy(this._rotation);
     }
   };
 
